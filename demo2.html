@@ -1,0 +1,51 @@
+<!-- div拖曳調換順序 適用gis中切換圖層順序-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title></title>
+  <style type="text/css">
+        body{
+            display: flex;
+            padding: 100px;
+            flex-direction: column;
+        }
+        div{
+            width: 100px;
+            height: 100px;
+            text-align: center;
+        }
+    </style>
+ 
+</head>
+<body>
+   <div style="background-color: red;width:200px;height:200px;" draggable="true">紅色</div>
+    <div style="background-color: green;width:100px" draggable="true">綠色</div>
+    <div style="background-color: blue;" draggable="true">藍色</div>
+</body>
+<script type="text/javascript">
+    let div =document.getElementsByTagName("div");
+    let container=null;
+    // 遍歷給每一個div綁定 dragstart dragover以及drop事件
+    for(let i=0;i<div.length;i++){
+        div[i].ondragstart=function(){  
+            container=this
+        }
+        div[i].ondragover=function(){
+            event.preventDefault();
+        }
+        div[i].ondrop=function(){
+            debugger;
+            if(container!=null&&container!=this){
+                // 具體思路跟變量值互換一樣
+                let temp = document.createElement("div");
+                document.body.replaceChild(temp,this);   //用新建的div占據目的位置
+                document.body.replaceChild(this,container);// 目的div放置在起始位置
+                document.body.replaceChild(container,temp)  // 起始div放置在目的位置
+                debugger; 
+                console.log('執行業務邏輯')
+            }
+        }
+    }
+</script>
+</html>
