@@ -13,6 +13,9 @@
             background-color:lightgray;
         }
         div{
+            display:inline-block;
+        }
+        #box123{
             width:500px;
             height:500px;
             margin:-4px auto;
@@ -21,12 +24,7 @@
             width:50px;
             height:50px;
             display:inline-block;
-        }
-        div[id$="0"]{
-            margin-left:300px;
-        }
-        div[id$="9"]{
-            margin-right:300px;
+            margin-top:-4px;
         }
         [draggable="true"] {
             /*
@@ -39,8 +37,7 @@
         }
 
     </style>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-
+    <script src="jquery/jquery341.js"></script>
     
 </head>
 <body>
@@ -48,29 +45,63 @@
     <br>
     <hr>
     <br>
+    <div id = "box123"></div>
     <script>
-        //draw picture
-        function draw(){
-            // 10*10
-            for(i=0;i<10;i++){
-                for(j=0;j<10;j++){
-                    let boxName = 'box' + i.toString() + j.toString();
-                    $("body").append('<div id ='+ boxName +' class = "box" draggable = "true"></div>');
-                    // how to change color
-                    let a = 255 - 20 * i;
-                    let b = 255 - 20 * j;
-                    let colors = 'rgb(' + a + ',' + b + ',' + '255)';
-                    $('#' + boxName).css("background-color", colors);
+        // shuffle array
+        function shuffle(array) {
+            var i = array.length, j = 0, temp;
+            while (i--) {
+                j = Math.floor(Math.random() * (i+1));
+                // swap randomly chosen element with current element
+                temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+        // function create array[0~99]
+        function array100(){
+            let array = []
+            for(i =0;i < 10; i++){
+                for(j = 0; j < 10; j++){
+                    array.push(i.toString() + j.toString());
                 }
             }
+            return array;
         }
-        draw();
+        // arrayNum = shuffle(array100());
+        // let x = arrayNum[10].substr(0, 1);
+        // let y = arrayNum[10].substr(1, 1);
+        // let testName = 'test' + x.toString() + y.toString();
+        // $("#box123").append('<div id ='+ testName +' class = "box" draggable = "true"></div>');
+        // let c = 255 - 20 * Number(x);
+        // let d = 255 - 20 * Number(y);
+        // let colors = 'rgb(' + c + ',' + d + ',' + '255)';
+        // $('#' + testName).css("background-color", colors);
+        // create random box
+        function draw_random(){
+            let arrayNum = shuffle(array100());
+            for(k = 0; k < arrayNum.length; k++){
+                let x = arrayNum[k].substr(0, 1);
+                let y = arrayNum[k].substr(1, 1);
+                let testName = 'test' + x.toString() + y.toString();
+                $("#box123").append('<div id ='+ testName +' class = "box" draggable = "true"></div>');
+                let c = 255 - 20 * Number(x);
+                let d = 255 - 20 * Number(y);
+                let colors = 'rgb(' + c + ',' + d + ',' + '255)';
+                $('#' + testName).css("background-color", colors);
+            }
+        }
+        draw_random();
 
         //drag
         var div = document.getElementsByTagName("div");
+        // let temp = document.querySelector('#boxes').appendChild(t);
+        // console.log(t);
         let container = null;
-        // 遍歷給每一個div綁定 dragstart dragover以及drop事件
-        for(let i = 0; i < div.length; i++){
+        //  遍歷給每一個div綁定 dragstart dragover以及drop事件
+        for(let i = 1; i < div.length; i++){
             div[i].ondragstart = function(){  
                 container = this
             }
@@ -78,15 +109,16 @@
                 event.preventDefault();
             }
             div[i].ondrop = function(){
-                debugger;
+                // debugger;
                 if(container != null && container != this){
-                    // 具體思路跟變量值互換一樣
-                    let temp = document.createElement("div");
-                    document.body.replaceChild(temp,this);   //用新建的div占據目的位置
-                    document.body.replaceChild(this,container);// 目的div放置在起始位置
-                    document.body.replaceChild(container,temp)  // 起始div放置在目的位置
-                    debugger; 
-                    // console.log('執行業務邏輯')
+                    let temp3 = document.querySelector('#box123').appendChild(document.createElement('div'));
+                    let temp4 = document.querySelector('#box123').appendChild(document.createElement('div'));
+
+                    document.getElementById("box123").insertBefore(temp3, this);
+                    document.getElementById("box123").insertBefore(temp4, container);
+                    document.getElementById("box123").replaceChild(container, temp3);
+                    document.getElementById("box123").replaceChild(this, temp4);
+                    // debugger; 
                 }
             }
         }
