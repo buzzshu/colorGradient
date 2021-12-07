@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Buzz">
+    <title>color</title>
+
+    <style>
+        *{
+            margin:0px;
+            padding:0px;
+            background-color:lightgray;
+        }
+        div{
+            display:inline-block;
+        }
+        #boxes{
+            width:500px;
+            height:500px;
+            margin:-4px auto;
+        }
+        #box_test{
+            width:500px;
+            height:500px;
+            margin:-4px auto;
+        }
+        .box{
+            width:50px;
+            height:50px;
+            display:inline-block;
+            margin-top:-4px;
+        }
+        [draggable="true"] {
+            /*
+            To prevent user selecting inside the drag source
+            */
+            user-select: none;
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+
+    </style>
+    <script src="jquery/jquery341.js"></script>
+    
+</head>
+<body>
+    <h3>color</h3>
+    <br>
+    <hr>
+    <br>
+    <div id = "boxes"></div>
+    <div id = "box_test"></div>
+    <script>
+        //draw picture
+        function draw(){
+            // 10*10
+            for(i=0;i<10;i++){
+                for(j=0;j<10;j++){
+                    let boxName = 'box' + i.toString() + j.toString();
+                    // dragable = "true"
+                    $("#boxes").append('<div id ='+ boxName +' class = "box"></div>');
+                    // how to change color
+                    let a = 255 - 20 * i;
+                    let b = 255 - 20 * j;
+                    let colors = 'rgb(' + a + ',' + b + ',' + '255)';
+                    $('#' + boxName).css("background-color", colors);
+                }
+            }
+        }
+        draw();
+
+        // shuffle array
+        function shuffle(array) {
+            var i = array.length, j = 0, temp;
+            while (i--) {
+                j = Math.floor(Math.random() * (i+1));
+                // swap randomly chosen element with current element
+                temp = array[i];
+                array[i] = array[j];
+                array[j] = temp;
+            }
+            return array;
+        }
+
+        // function create array[0~99]
+        function array100(){
+            let array = []
+            for(i =0;i < 10; i++){
+                for(j = 0; j < 10; j++){
+                    array.push(i.toString() + j.toString());
+                }
+            }
+            return array;
+        }
+
+        // create random box
+        function draw_random(){
+            arrayNum = shuffle(array100());
+            for(k = 0; k < 100; k++){
+                let x = arrayNum[k].substr(0, 1);
+                let y = arrayNum[k].substr(1, 1);
+                let testName = 'box_test' + x.toString() + y.toString();
+                $("#box_test").append('<div id ='+ testName +' class = "box" draggable = "true"></div>');
+                let c = 255 - 20 * Number(x);
+                let d = 255 - 20 * Number(y);
+                let colors = 'rgb(' + c + ',' + d + ',' + '255)';
+                $('#' + testName).css("background-color", colors);
+
+            }
+        }
+        draw_random();
+
+        //drag
+        var div = document.getElementsByTagName("div");
+        let container = null;
+        //  給每一個div#box_test 綁定 dragstart dragover以及drop事件
+        for(let i = 102; i < div.length; i++){
+            div[i].ondragstart = function(){  
+                container = this
+            }
+            div[i].ondragover = function(){
+                event.preventDefault();
+            }
+            div[i].ondrop = function(){
+                // debugger;
+                if(container != null && container != this){
+                    // 原本想用新增一個div，再使用replaceChild去互換，但其他版本中都可以成功，但在這邊第一次replace後，
+                    // 原本的div就不見了，這邊改採用新增兩個空的div在初始點跟目標點的div，再使用互換達成交換的效果。
+                    // 之後可以再重新思考這邊為什麼會不成功。
+                    // let temp1 = document.querySelector('#boxes').appendChild(document.createElement('div'));
+                    // let temp2 = document.querySelector('#boxes').appendChild(document.createElement('div'));
+
+                    // document.getElementById("boxes").insertBefore(temp1, this);
+                    // document.getElementById("boxes").insertBefore(temp2, container);
+                    // document.getElementById("boxes").replaceChild(container, temp1);
+                    // document.getElementById("boxes").replaceChild(this, temp2);
+
+                    let temp3 = document.querySelector('#box_test').appendChild(document.createElement('div'));
+                    let temp4 = document.querySelector('#box_test').appendChild(document.createElement('div'));
+
+                    document.getElementById("box_test").insertBefore(temp3, this);
+                    document.getElementById("box_test").insertBefore(temp4, container);
+                    document.getElementById("box_test").replaceChild(container, temp3);
+                    document.getElementById("box_test").replaceChild(this, temp4);
+                    // debugger; 
+                }
+            }
+        }
+    </script>
+</body>
+</html>
