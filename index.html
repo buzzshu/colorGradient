@@ -7,63 +7,89 @@
     <title>Color Puzzle</title>
 
     <style>
+
         *{
             margin:0px;
             padding:0px;
             background-color:lightgray;
             justify-content:space-between;
+            font-family: 'Microsoft JhengHei', sans-serif;
 
         }
+
         h1{
             text-align: center;
         }
+
         button{
             width:100px;
             height:50px;
-            border-radius: 12%;
+            border-radius: 15%;
+            border-style: solid;
         }
+
+        button:hover{
+            color:white;
+            background-color: rgba(0, 0, 0, 0.3);
+        }
+
         #board{
-            width:500px;
-            height:500px;
+            width:40%;
+            height:40vw;
             margin:-4px auto;
-            display:inline-block;
+            display:block;
+            float:left;
             justify-content:space-between;
             margin-left:50px;
 
         }
+
         #ui{
-            width:500px;
-            height:500px;
+            width:40%;
+            height:40vw;
             margin:0 auto;
-            display:inline-block;
+            display:block;
+            float:left;
             text-align: center;
-            vertical-align: top;
             margin-left:150px;
         }
+
         .box{
-            width:50px;
-            height:50px;
+            width:100px;
+            height:100px;
             display:inline-block;
             margin-top:-4px;
             text-align:center;
-            vertical-align:top;
-            /* color:rgba(0, 0, 0, 0.7); */
+            vertical-align:middle;
         }
+
         input[type="radio"]{
             opacity:0;
             text-align:center;
             border:1px solid lightgray;
         }
+
         label{
             background-color:white;
             margin:-8.5px;
-            border:2px solid black;
+            border:1px solid black;
+            /* border-left: 0px; */
+            /* border-radius: 15%; */
+        }
+
+        label[id="diff"], label[for = "initcolor"]{
             border-radius: 15%;
         }
+
+        label[for="hell"]{
+            border-radius: 0% 15% 15% 0%;
+        }
+
         input[type="radio"]:checked + label{
             background-color:black;
             color:white;
         }
+
         [draggable="true"] {
             /*
             To prevent user selecting inside the drag source
@@ -83,8 +109,8 @@
     <hr>
     <br>
     <div id = "ui">
-        <p>規則：</p>
-        <label>難度 </label>
+        <p>說明：</p>
+        <label id = "diff">難度 </label>
         <input type = "radio" name = "diffcult" id = "easy" value = "Easy" checked><label for = "easy">Easy</label>
         <input type = "radio" name = "diffcult" id = "normal" value = "Normal"><label for = "normal">Normal</label>
         <input type = "radio" name = "diffcult" id = "hard" value = "Hard"><label for = "hard">Hard</label>
@@ -305,6 +331,10 @@
         }
 
         draw_random(size = 10, norm = true);
+        let boxsize = "10%";
+        $('.box').css("width", boxsize);
+        $('.box').css("height", boxsize);
+
         var div = document.getElementById("board").getElementsByTagName("div");
         
         //
@@ -315,10 +345,11 @@
             n = getnSize();
             // draw borad by n = getnSize();
             draw_random(size = n, norm = false);
-            let boxsize = parseInt($('#board').css("width"), 10) / n + "px";
+            let boxsize = 100 / n + "%";
             $('.box').css("width", boxsize);
             $('.box').css("height", boxsize);
-            $('.box').css("line-height", parseInt($('#board').css("width"), 10) / (1.2 * n) + "px");
+            $('.box').css("line-height", parseInt($('#board').css("width"), 10) / (1.25 * n) + "px");
+
             // use divdrag to let div#box get drag and drop;
             divdrag(n);
             // fixed point as hint
