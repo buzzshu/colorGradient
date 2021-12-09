@@ -30,7 +30,12 @@
 
         button:hover{
             color:white;
-            background-color: rgba(0, 0, 0, 0.3);
+            background-color: rgba(0, 0, 0, 1);
+        }
+
+        button:active{
+            box-shadow:0 3px #666;
+            transform: translateY(2px);
         }
 
         #board{
@@ -324,20 +329,32 @@
             // delay time 50ms
             setTimeout(function(){
                 if(time == Math.pow(nSize, 2) - 1){
-                    $('#correct').html("Correct <br><hr><br>");
+                    // box[10].style.width = "50px";
                     alert("You are right!");
                 }}, 50);
             
         }
 
+
+        // set init state
         draw_random(size = 10, norm = true);
         let boxsize = "10%";
         $('.box').css("width", boxsize);
         $('.box').css("height", boxsize);
 
         var div = document.getElementById("board").getElementsByTagName("div");
+        let temp1 = document.querySelector('#board').appendChild(document.createElement('div'));
+        let temp2 = document.querySelector('#board').appendChild(document.createElement('div'));
+        let temp3 = div[43];
+
+        div[41].parentNode.insertBefore(temp1, temp3);
+        div[41].parentNode.replaceChild(div[41], temp1);
+
+        div[41].parentNode.insertBefore(temp2, div[41]);
+        div[41].parentNode.replaceChild(temp3, temp2);
+        divdrag(10);
         
-        //
+        // game start
         $('#start').click(function(){
             // reset div#borad
             document.getElementById("board").innerHTML = "";
