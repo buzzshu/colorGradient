@@ -11,14 +11,24 @@
         *{
             margin:0px;
             padding:0px;
-            background-color:lightgray;
+            background-color:Gainsboro;
             justify-content:space-between;
             font-family: 'Microsoft JhengHei', sans-serif;
-
         }
 
         h1{
             text-align: center;
+        }
+
+        #ui{
+            width:40%;
+            height:40vw;
+            margin:0 auto;
+            display:block;
+            float:left;
+            text-align: center;
+            margin-left:150px;
+            padding-top: 50px;
         }
 
         button{
@@ -46,17 +56,6 @@
             float:left;
             justify-content:space-between;
             margin-left:50px;
-
-        }
-
-        #ui{
-            width:40%;
-            height:40vw;
-            margin:0 auto;
-            display:block;
-            float:left;
-            text-align: center;
-            margin-left:150px;
         }
 
         .box{
@@ -68,16 +67,39 @@
             vertical-align:middle;
         }
 
+        .box.shaker{
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        .box[draggable="false"]:active{
+            animation: shake 0.5s;
+            animation-iteration-count: 1;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(1px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(3px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+            60% { transform: translate(-3px, 1px) rotate(0deg); }
+            70% { transform: translate(3px, 1px) rotate(-1deg); }
+            80% { transform: translate(-1px, -1px) rotate(1deg); }
+            90% { transform: translate(1px, 2px) rotate(0deg); }
+            100% { transform: translate(1px, -2px) rotate(-1deg); }
+        }
+
         input[type="radio"]{
             opacity:0;
             text-align:center;
-            border:1px solid lightgray;
         }
 
         label{
             background-color:white;
             margin:-8.5px;
-            border:1px solid black;
+            border:1px solid dimgray;
             /* border-left: 0px; */
             /* border-radius: 15%; */
         }
@@ -86,13 +108,37 @@
             border-radius: 15%;
         }
 
+        /* label[for="easy"]{
+            background-color:blue;
+        }
+
+        label[for="normal"]{
+            background-color:green;
+        }
+
+        label[for="hard"]{
+            background-color:yellow;
+        } */
+
         label[for="hell"]{
+            /* background-color:red; */
             border-radius: 0% 15% 15% 0%;
         }
 
-        input[type="radio"]:checked + label{
-            background-color:black;
-            color:white;
+        input[id="easy"]:checked + label{
+            background-color: lawngreen;
+        }
+
+        input[id="normal"]:checked + label{
+            background-color:gold;
+        }
+
+        input[id="hard"]:checked + label{
+            background-color:lightsalmon;
+        }
+
+        input[id="hell"]:checked + label{
+            background-color:orangered;
         }
 
         [draggable="true"] {
@@ -114,36 +160,35 @@
     <hr>
     <br>
     <div id = "ui">
-        <p>說明：</p>
+        <p>重新排列彩色方塊，讓他們形成秩序井然的光譜。</p><br>
+        <p>有四種難度，也可自行選擇漸層的顏色。</p><br>
+        <p>開始你的色彩之旅吧！</p><br>
         <label id = "diff">難度 </label>
         <input type = "radio" name = "diffcult" id = "easy" value = "Easy" checked><label for = "easy">Easy</label>
         <input type = "radio" name = "diffcult" id = "normal" value = "Normal"><label for = "normal">Normal</label>
         <input type = "radio" name = "diffcult" id = "hard" value = "Hard"><label for = "hard">Hard</label>
-        <input type = "radio" name = "diffcult" id = "hell" value = "Hell"><label for = "hell">Hell</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type = "radio" name = "diffcult" id = "hell" value = "Hell"><label for = "hell">Hell</label><br><br>
 
         <label for = "initcolor">顏色</label>&nbsp;&nbsp;
-        <input type = "color" id = "initcolor" value = "#0000FF"><br><br>
+        <input type = "color" id = "initcolor" value = '#f0e68c'><br><br>
         <button id = "start">Start</button>
     </div>
     <div id = "board"></div>
-    <br>
-    <hr>
-    <br>
     <script>
         // get difficulty to decide the size of puzzle
         function getnSize(){
-            let nSize; 
+            let n; 
             let diff = document.querySelector('input[type = "radio"]:checked').value;
             if(diff == "Easy"){
-                nSize = 7;
+                n = 7;
             }else if(diff == "Normal"){
-                nSize = 7;
+                n = 7;
             }else if(diff == "Hard"){
-                nSize = 9;
+                n = 9;
             }else{
-                nSize = 10
+                n = 10
             }
-            return nSize;
+            return n;
         }
         
         // shuffle array
@@ -160,11 +205,11 @@
         }
 
         // function create array by nSize
-        function arrayij(nSize){
+        function arrayij(n){
             array = [];
-            for(i=0;i<nSize;i++){
-                for(j=0;j<nSize;j++){
-                    array.push(i.toString()+j.toString());
+            for(i = 0; i < n; i++){
+                for(j = 0; j < n; j++){
+                    array.push(i.toString() + j.toString());
                 }
             }
             return array;
@@ -173,11 +218,11 @@
         // use array2D to store ij and order
         // ij would be color value
         // order can be a value to check sucess
-        function array2D(nSize){
+        function array2D(n){
             let array = [];
             time = 0;
-            arij = arrayij(nSize);
-            for(k =0; k < Math.pow(nSize, 2); k ++){
+            arij = arrayij(n);
+            for(k =0; k < Math.pow(n, 2); k ++){
                 array[k] = [];
                 array[k][0] = arij[k];
                 array[k][1] = k;
@@ -196,12 +241,11 @@
         function swapNum(ele, index){
             let temp1 = document.querySelector('#board').appendChild(document.createElement('div'));
             let temp2 = document.querySelector('#board').appendChild(document.createElement('div'));
+            // after swap the target's index would be wrong, let temp3 to store the target's value
             let temp3 = ele[index];
 
             ele[findNum(ele, index)].parentNode.insertBefore(temp1, temp3);
-            console.log(ele[index]);
             ele[findNum(ele, index)].parentNode.insertBefore(temp2, ele[findNum(ele, index)]);
-            console.log(ele[findNum(ele, index)]);
 
             ele[findNum(ele, index)].parentNode.replaceChild(ele[findNum(ele, index)], temp1);
             ele[findNum(ele, index)].parentNode.replaceChild(temp3, temp2);
@@ -241,9 +285,9 @@
             }else if(diff == "Hard"){
                 array = [0, n - 1, n * ( n - 1), n * n -1];
             }else{
-                array = [0];
+                array = [0, n - 1, n * ( n - 1), n * n -1];
             }
-            return [...new Set(array)].sort(function(a,b){
+            return [...new Set(array)].sort(function(a, b){
                 return a - b;
             });
         }
@@ -255,6 +299,12 @@
             }
         }
 
+        const hexToRgb = hex =>
+            hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+                        ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+                .substring(1).match(/.{2}/g)
+                .map(x => parseInt(x, 16))
+
         // create random box
         function draw_random(size, norm){
             // let shuffle array to get random
@@ -265,37 +315,60 @@
                 arrayNum = shuffle(array2D(size));
             }
             // let arrayNum = array2D(size);
+            // set rgb() b 
+            let initColor = hexToRgb(document.getElementById("initcolor").value)
+            console.log(initColor[0]);
+            console.log(initColor[0] < 127);
+
             for(k = 0; k < arrayNum.length; k++){
                 let x = arrayNum[k][0].substr(0, 1);
                 let y = arrayNum[k][0].substr(1, 1);
                 let testName = 'test' + x.toString() + y.toString();
                 $("#board").append('<div id ='+ testName + ' value = "' + arrayNum[k][1] + '"' +' class = "box" draggable = "true"></div>');
-                let c = 255 - 15 * Number(x);
-                let d = 255 - 20 * Number(y);
-                let colors = 'rgb(' + c + ',' + d + ',' + '200)';
+                if(initColor[0] < 127){
+                    r = initColor[0] + 12 * Number(x);
+                }else{
+                    r = initColor[0] - 12 * Number(x);
+                }
+                if(initColor[1] < 127){
+                    g = initColor[1] + 12 * Number(y);
+                }else{
+                    g = initColor[1] - 12 * Number(y);
+                }
+                let colors = 'rgb(' + r + ',' + g + ',' + initColor[2] + ')';
                 $('#' + testName).css("background-color", colors);
             }
 
 
         }
 
-        //drag
+        //set fixed box can't be drag or drop
         function noAllowDrop(ev) {
             ev.stopPropagation();
         }
 
+        //drag
         function divdrag(size){
             // var div = document.getElementById("board").getElementsByTagName("div");
             let container = null;
             //  給每一個div綁定 dragstart dragover以及drop事件
             for(let i = 0; i < div.length; i++){
                 div[i].ondragstart = function(){  
+                    this.style.opacity = "0.1";
                     container = this
                 }
                 div[i].ondragover = function(){
                     event.preventDefault();
+
                 }
+
+                div[i].ondragend = function(){
+                    container.style.opacity = "1";
+                }
+
                 div[i].ondrop = function(){
+                    container.style.opacity = "1";
+
                     // debugger;
                     if(container != null && container != this){
                         let temp1 = document.querySelector('#board').appendChild(document.createElement('div'));
@@ -312,7 +385,7 @@
             }
         }
 
-        function isFinish(nSize){
+        function isFinish(n){
             let box = document.querySelectorAll("div");
             let arrayC = [];
             for(i=1; i<box.length; i++){
@@ -326,12 +399,17 @@
                     time = time + 1;
                 }
             }
-            // delay time 50ms
-            setTimeout(function(){
-                if(time == Math.pow(nSize, 2) - 1){
-                    // box[10].style.width = "50px";
-                    alert("You are right!");
-                }}, 50);
+
+            // for loop to let each box shake?
+            if(time == Math.pow(n, 2) - 1){
+                $('.box').text("");
+                // delay time 50ms
+                setTimeout(function(){
+                    $('.box').addClass('shaker');
+                    $('.box').one('animationend', () => {
+                        $('.box').removeClass('shaker')})
+                }, 250);  
+            }
             
         }
 
@@ -345,13 +423,13 @@
         var div = document.getElementById("board").getElementsByTagName("div");
         let temp1 = document.querySelector('#board').appendChild(document.createElement('div'));
         let temp2 = document.querySelector('#board').appendChild(document.createElement('div'));
-        let temp3 = div[43];
+        let temp3 = div[41];
 
-        div[41].parentNode.insertBefore(temp1, temp3);
-        div[41].parentNode.replaceChild(div[41], temp1);
+        div[15].parentNode.insertBefore(temp1, temp3);
+        div[15].parentNode.replaceChild(div[15], temp1);
 
-        div[41].parentNode.insertBefore(temp2, div[41]);
-        div[41].parentNode.replaceChild(temp3, temp2);
+        div[15].parentNode.insertBefore(temp2, div[15]);
+        div[15].parentNode.replaceChild(temp3, temp2);
         divdrag(10);
         
         // game start
