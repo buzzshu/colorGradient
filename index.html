@@ -104,7 +104,11 @@
             /* border-radius: 15%; */
         }
 
-        label[id="diff"], label[for = "initcolor"]{
+        label[id="diff"]{
+            border-radius:15% 0% 0% 15%;
+        }
+
+        label[for = "initcolor"]{
             border-radius: 15%;
         }
 
@@ -163,11 +167,11 @@
         <p>重新排列彩色方塊，讓他們形成秩序井然的光譜。</p><br>
         <p>有四種難度，也可自行選擇漸層的顏色。</p><br>
         <p>開始你的色彩之旅吧！</p><br>
-        <label id = "diff">難度 </label>
-        <input type = "radio" name = "diffcult" id = "easy" value = "Easy" checked><label for = "easy">Easy</label>
-        <input type = "radio" name = "diffcult" id = "normal" value = "Normal"><label for = "normal">Normal</label>
-        <input type = "radio" name = "diffcult" id = "hard" value = "Hard"><label for = "hard">Hard</label>
-        <input type = "radio" name = "diffcult" id = "hell" value = "Hell"><label for = "hell">Hell</label><br><br>
+        <label id = "diff">&nbsp;難度&nbsp;</label>
+        <input type = "radio" name = "diffcult" id = "easy" value = "Easy"><label for = "easy">&nbsp;Easy&nbsp;</label>
+        <input type = "radio" name = "diffcult" id = "normal" value = "Normal"><label for = "normal">&nbsp;Normal&nbsp;</label>
+        <input type = "radio" name = "diffcult" id = "hard" value = "Hard"><label for = "hard">&nbsp;Hard&nbsp;</label>
+        <input type = "radio" name = "diffcult" id = "hell" value = "Hell"><label for = "hell">&nbsp;Hell&nbsp;</label><br><br>
 
         <label for = "initcolor">顏色</label>&nbsp;&nbsp;
         <input type = "color" id = "initcolor" value = '#f0e68c'><br><br>
@@ -305,6 +309,15 @@
                 .substring(1).match(/.{2}/g)
                 .map(x => parseInt(x, 16))
 
+        // func to calculate color rgb code
+        function colorCal(value, index){
+            if(value < 127){
+                v = value + 12 * index;
+            }else{
+                v = value - 12 * index;
+            }
+            return v
+        }
         // create random box
         function draw_random(size, norm){
             // let shuffle array to get random
@@ -317,25 +330,48 @@
             // let arrayNum = array2D(size);
             // set rgb() b 
             let initColor = hexToRgb(document.getElementById("initcolor").value)
-            console.log(initColor[0]);
-            console.log(initColor[0] < 127);
+            r = initColor[0];
+            g = initColor[1];
+            b = initColor[2];
+            const i = Math.floor(Math.random() * 3);
+            const j = Math.floor(Math.random() * 2);
 
             for(k = 0; k < arrayNum.length; k++){
                 let x = arrayNum[k][0].substr(0, 1);
                 let y = arrayNum[k][0].substr(1, 1);
                 let testName = 'test' + x.toString() + y.toString();
                 $("#board").append('<div id ='+ testName + ' value = "' + arrayNum[k][1] + '"' +' class = "box" draggable = "true"></div>');
-                if(initColor[0] < 127){
-                    r = initColor[0] + 12 * Number(x);
+                // random select 2 of r, g, b
+                let r1, g1, b1;
+                if(i == 0){
+                    r1 = colorCal(r, Number(x));
+                    if(j == 0){
+                        g1 = colorCal(g, Number(y));
+                        b1 = b;
+                    }else{
+                        b1 = colorCal(b, Number(y));
+                        g1 = g;
+                    }
+                }else if(i == 1){
+                    g1 = colorCal(g, Number(x));
+                    if(j == 0){
+                        r1 = colorCal(r, Number(y));
+                        b1 = b;
+                    }else{
+                        b1 = colorCal(b, Number(y));
+                        r1 = r;
+                    }
                 }else{
-                    r = initColor[0] - 12 * Number(x);
+                    b1 = colorCal(b, Number(x));
+                    if(j == 0){
+                        r1 = colorCal(r, Number(y));
+                        g1 = g;
+                    }else{
+                        g1 = colorCal(g, Number(y));
+                        r1 = r;
+                    }
                 }
-                if(initColor[1] < 127){
-                    g = initColor[1] + 12 * Number(y);
-                }else{
-                    g = initColor[1] - 12 * Number(y);
-                }
-                let colors = 'rgb(' + r + ',' + g + ',' + initColor[2] + ')';
+                let colors = 'rgb(' + r1 + ',' + g1 + ',' + b1 + ')';
                 $('#' + testName).css("background-color", colors);
             }
 
@@ -431,26 +467,26 @@
         div[15].parentNode.insertBefore(temp2, div[15]);
         div[15].parentNode.replaceChild(temp3, temp2);
         divdrag(10);
-        
         // game start
         $('#start').click(function(){
             // reset div#borad
-            document.getElementById("board").innerHTML = "";
-            // decide size of borad by getnSize to get difficulty;
-            n = getnSize();
-            // draw borad by n = getnSize();
-            draw_random(size = n, norm = false);
-            let boxsize = 100 / n + "%";
-            $('.box').css("width", boxsize);
-            $('.box').css("height", boxsize);
-            $('.box').css("line-height", parseInt($('#board').css("width"), 10) / (1.25 * n) + "px");
+            if(document.querySelector('input[type = "radio"]:checked') != null){
+                document.getElementById("board").innerHTML = "";
+                // decide size of borad by getnSize to get difficulty;
+                n = getnSize();
+                // draw borad by n = getnSize();
+                draw_random(size = n, norm = false);
+                let boxsize = 100 / n + "%";
+                $('.box').css("width", boxsize);
+                $('.box').css("height", boxsize);
+                $('.box').css("line-height", parseInt($('#board').css("width"), 10) / (1.25 * n) + "px");
 
-            // use divdrag to let div#box get drag and drop;
-            divdrag(n);
-            // fixed point as hint
-            arrayd = arrayDiff(div);
-            setDiff(div, arrayd);
-
+                // use divdrag to let div#box get drag and drop;
+                divdrag(n);
+                // fixed point as hint
+                arrayd = arrayDiff(div);
+                setDiff(div, arrayd);
+            }
         })
 
     </script>
