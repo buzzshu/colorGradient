@@ -40,7 +40,7 @@
 
         button:hover{
             color:white;
-            background-color: rgba(0, 0, 0, 1);
+            background-color: lightgrey;
         }
 
         button:active{
@@ -173,7 +173,7 @@
         <input type = "radio" name = "diffcult" id = "hard" value = "Hard"><label for = "hard">&nbsp;Hard&nbsp;</label>
         <input type = "radio" name = "diffcult" id = "hell" value = "Hell"><label for = "hell">&nbsp;Hell&nbsp;</label><br><br>
 
-        <label for = "initcolor">顏色</label>&nbsp;&nbsp;
+        <label for = "initcolor">&nbsp;顏色&nbsp;</label>&nbsp;&nbsp;
         <input type = "color" id = "initcolor" value = '#f0e68c'><br><br>
         <button id = "start">Start</button>
     </div>
@@ -486,6 +486,8 @@
                 // fixed point as hint
                 arrayd = arrayDiff(div);
                 setDiff(div, arrayd);
+            }else{
+                alert("請選擇難度")
             }
         })
 
