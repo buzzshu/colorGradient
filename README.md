@@ -13,7 +13,7 @@
 https://dkmsfire.github.io/colorGradient/
 
 ## 技術
-主要使用TML5 Drag and Drop API  
+主要使用HTML5 Drag and Drop API  
 達到拖放功能  
 透過撰寫拖放事件  
 來達到色塊交換的功能  
