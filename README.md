@@ -10,7 +10,7 @@
 透過重新排列彩色方塊  
 讓他們形成井然有序的光譜  
 趕快開始你的色彩之旅吧！  
-https://dkmsfire.github.io/colorGradient/
+https://buzzshu.github.io/colorGradient/
 
 ## 技術
 主要使用HTML5 Drag and Drop API  
